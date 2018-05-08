@@ -9,3 +9,9 @@
         name: mysql-server
         state: present
         update_cache: yes
+
+    - name: Verify that MySQL server is up and running
+      service:
+        name: mysql
+        state: started
+        enabled: yes
