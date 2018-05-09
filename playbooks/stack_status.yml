@@ -1,0 +1,69 @@
+---
+- name: Loadbalancer status
+  hosts: loadbalancer
+  become: true
+  tasks:
+    - name: Verify nginx service
+      command: service nginx status
+
+    - name: verify nginx is listening on 80
+      wait_for:
+        port: 80
+        timeout: 20
+
+- name: Webserver status
+  hosts: webserver
+  become: true
+  tasks:
+    - name: Verify apache2 service
+      command: service apache2 status
+
+    - name: verify apache2 is listening on 80
+      wait_for:
+        port: 80
+        timeout: 20
+
+- name: Verify Database status
+  hosts: database
+  become: true
+  tasks:
+    - name: Verify mysql service
+      command: service mysql status
+
+    - name: verify mysql is listening on 3306
+      wait_for:
+        port: 3306
+        timeout: 20
+
+- name: Control Verify end to end
+  hosts: controlcenter
+  tasks:
+    - name: "Verify end to end response load balancer {{item}}"
+      uri:
+        url: "http://{{item}}"
+        return_content: yes
+      with_items: 
+        - groups.loadbalancer
+      register: lb_index
+
+    - name: Check Status
+      fail:
+        msg: "index failed to return content"
+      when: "'Hello, from sunny' not in item.content"
+      with_items: "{{lb_index.results}}"
+  
+- name: Loadbalancer backend response
+  hosts: loadbalancer
+  tasks:
+    - name: Verify backend response
+      uri:
+        url: "http://{{item}}"
+        return_content: yes
+      with_items: groups.webserver
+      register: app_index
+
+    - name: Check Status
+      fail:
+        msg: "index failed to return content"
+      when: "'Hello, from sunny' not in item.content"
+      with_items: "{{app_index.results}}"
