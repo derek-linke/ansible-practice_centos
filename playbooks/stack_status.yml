@@ -38,32 +38,60 @@
 - name: Control Verify end to end
   hosts: controlcenter
   tasks:
-    - name: "Verify end to end response load balancer {{item}}"
+    - name: "Verify end to end response load balancer"
       uri:
         url: "http://{{item}}"
         return_content: yes
-      with_items: 
-        - groups.loadbalancer
+      with_items: "{{ groups.loadbalancer }}"
       register: lb_index
 
-    - name: Check Status
+    - name: Check LB Status
       fail:
         msg: "index failed to return content"
       when: "'Hello, from sunny' not in item.content"
       with_items: "{{lb_index.results}}"
+
+    - name: "Verify LB to DB end to end db response"
+      uri:
+        url: "http://{{item}}/db"
+        return_content: yes
+      with_items: "{{ groups.loadbalancer }}"
+      register: lb_db
+
+    - name: Check LB to DB Status
+      fail:
+        msg: "db failed to return content"
+      when: "'Database Connected from' not in item.content"
+      with_items: "{{lb_db.results}}"
+
   
 - name: Loadbalancer backend response
   hosts: loadbalancer
   tasks:
-    - name: Verify backend response
+    - name: Verify KLB to APP backend response
       uri:
         url: "http://{{item}}"
         return_content: yes
-      with_items: groups.webserver
+      with_items: "{{ groups.webserver }}"
       register: app_index
 
-    - name: Check Status
+    - name: Check LB to APP Status
       fail:
         msg: "index failed to return content"
       when: "'Hello, from sunny' not in item.content"
       with_items: "{{app_index.results}}"
+
+    - name: Verify App to DB response
+      uri:
+        url: "http://{{item}}/db"
+        return_content: yes
+      with_items: "{{ groups.webserver }}"
+      register: app_db
+
+    - name: Check App to DB Status
+      fail:
+        msg: "db failed to return content"
+      when: "'Database Connected from' not in item.content"
+      with_items: "{{app_db.results}}"
+
+
