@@ -3,14 +3,6 @@
   hosts: controlcenter
   become: true
 
-  tasks:
-    - name: Install Curl
-      apt: 
-        name: "{{item}}"
-        state: present
-        update_cache: yes
-      with_items:
-        - curl
-        - python-httplib2
-  
+  roles:
+    - control  
 

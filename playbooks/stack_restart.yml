@@ -38,6 +38,7 @@
 
     - name: Verfiy port 3306 is mysql
       wait_for:
+        host: "{{ ansible_eth1.ipv4.address }}"
         port: 3306
         state: started
 
