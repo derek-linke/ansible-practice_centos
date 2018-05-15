@@ -18,6 +18,7 @@
   tasks:
     - name: Verify apache2 service
       command: service apache2 status
+      tags: stack_status
 
     - name: verify apache2 is listening on 80
       wait_for:
@@ -31,6 +32,7 @@
   tasks:
     - name: Verify mysql service
       command: service mysql status
+      tags: stack_status
 
     - name: verify mysql is listening on 3306
       wait_for:
