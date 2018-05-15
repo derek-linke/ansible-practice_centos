@@ -5,6 +5,7 @@
   tasks:
     - name: Verify nginx service
       command: service nginx status
+      tags: stack_status
 
     - name: verify nginx is listening on 80
       wait_for:
