@@ -10,6 +10,7 @@
       wait_for:
         port: 80
         timeout: 20
+      tags: stack_status
 
 - name: Webserver status
   hosts: webserver
@@ -22,6 +23,7 @@
       wait_for:
         port: 80
         timeout: 20
+      tags: stack_status
 
 - name: Verify Database status
   hosts: database
@@ -35,6 +37,7 @@
         host: "{{ ansible_eth1.ipv4.address }}"
         port: 3306
         timeout: 20
+      tags: stack_status
 
 - name: Control Verify end to end
   hosts: controlcenter
@@ -45,12 +48,14 @@
         return_content: yes
       with_items: "{{ groups.loadbalancer }}"
       register: lb_index
+      tags: stack_status
 
     - name: Check LB Status
       fail:
         msg: "index failed to return content"
       when: "'Hello, from sunny' not in item.content"
       with_items: "{{lb_index.results}}"
+      tags: stack_status
 
     - name: "Verify LB to DB end to end db response"
       uri:
@@ -58,13 +63,14 @@
         return_content: yes
       with_items: "{{ groups.loadbalancer }}"
       register: lb_db
+      tags: stack_status
 
-#    - name: Check LB to DB Status
-#      fail:
-#        msg: "db failed to return content"
-#      when: "'Database Connected from' not in item.content"
-#      with_items: "{{lb_db.results}}"
-
+    - name: Check LB to DB Status
+      fail:
+        msg: "db failed to return content"
+      when: "'Database Connected from' not in item.content"
+      with_items: "{{lb_db.results}}"
+      tags: stack_status
   
 - name: Loadbalancer backend response
   hosts: loadbalancer
@@ -75,12 +81,14 @@
         return_content: yes
       with_items: "{{ groups.webserver }}"
       register: app_index
+      tags: stack_status
 
     - name: Check LB to APP Status
       fail:
         msg: "index failed to return content"
       when: "'Hello, from sunny' not in item.content"
       with_items: "{{app_index.results}}"
+      tags: stack_status
 
     - name: Verify App to DB response
       uri:
@@ -88,11 +96,12 @@
         return_content: yes
       with_items: "{{ groups.webserver }}"
       register: app_db
+      tags: stack_status
 
     - name: Check App to DB Status
       fail:
         msg: "db failed to return content"
       when: "'Database Connected from' not in item.content"
       with_items: "{{app_db.results}}"
-
+      tags: stack_status
 
