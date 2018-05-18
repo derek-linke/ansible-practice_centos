@@ -1,6 +1,6 @@
 ---
 - name: Loadbalancer status
-  hosts: loadbalancer
+  hosts: tag_Name_LB_DRL
   become: true
   tasks:
     - name: Verify nginx service
@@ -14,7 +14,7 @@
       tags: stack_status
 
 - name: Webserver status
-  hosts: webserver
+  hosts: tag_Name_APP_DRL
   become: true
   tasks:
     - name: Verify apache2 service
@@ -28,7 +28,7 @@
       tags: stack_status
 
 - name: Verify Database status
-  hosts: database
+  hosts: tag_Name_DB_DRL
   become: true
   tasks:
     - name: Verify mysql service
@@ -37,7 +37,7 @@
 
     - name: verify mysql is listening on 3306
       wait_for:
-        host: "{{ ansible_eth1.ipv4.address }}"
+        host: "{{ groups.tag_Name_DB_DRL }}"
         port: 3306
         timeout: 20
       tags: stack_status
@@ -49,7 +49,7 @@
       uri:
         url: "http://{{item}}"
         return_content: yes
-      with_items: "{{ groups.loadbalancer }}"
+      with_items: "{{ groups.tag_Name_LB_DRL }}"
       register: lb_index
       tags: stack_status
 
@@ -64,7 +64,7 @@
       uri:
         url: "http://{{item}}/db"
         return_content: yes
-      with_items: "{{ groups.loadbalancer }}"
+      with_items: "{{ groups.tag_Name_LB_DRL }}"
       register: lb_db
       tags: stack_status
 
@@ -82,7 +82,7 @@
       uri:
         url: "http://{{item}}"
         return_content: yes
-      with_items: "{{ groups.webserver }}"
+      with_items: "{{ groups.tag_Name_APP_DRL }}"
       register: app_index
       tags: stack_status
 
@@ -97,7 +97,7 @@
       uri:
         url: "http://{{item}}/db"
         return_content: yes
-      with_items: "{{ groups.webserver }}"
+      with_items: "{{ groups.tag_Name_APP_DRL }}"
       register: app_db
       tags: stack_status
 
