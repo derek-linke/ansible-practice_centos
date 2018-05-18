@@ -1,16 +1,16 @@
 ---
 # tasks file for nginx
 
-   - name: Install Python
-     raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    - name: Install Python
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
 
-   - name: install tools
-     apt:
-       name: "{{item}}"
-       state: present
-       update_cache: yes
-     with_items:
-       - python-httplib2
+    - name: install tools
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+      with_items:
+        - python-httplib2
 
     - name: install nginx
       apt:
