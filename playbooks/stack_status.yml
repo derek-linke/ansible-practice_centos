@@ -35,6 +35,10 @@
       command: service mysql status
       tags: stack_status
 
+    - name: DB IP Verification
+      debug:
+        msg: "{{ groups.tag_Name_DB_DRL }}"
+
     - name: verify mysql is listening on 3306
       wait_for:
         host: "{{ groups.tag_Name_DB_DRL }}"
