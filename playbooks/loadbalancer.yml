@@ -1,6 +1,6 @@
 ---
 - name: LoadBalancer Setup
-  hosts: loadbalancer
+  hosts: tag_Name_LB
   become: true
 
   roles:
