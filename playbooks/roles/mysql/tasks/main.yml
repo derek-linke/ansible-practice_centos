@@ -25,7 +25,7 @@
       lineinfile:
         dest: /etc/mysql/my.cnf
         regexp: ^bind-address
-        line: "bind-address = {{ tag_Name_DB_DRL }}"
+        line: "bind-address = {{ groups.tag_Name_DB_DRL }}"
       notify: restart mysql
 
     - name: Verify that MySQL server is up and running
