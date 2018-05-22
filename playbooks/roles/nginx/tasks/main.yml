@@ -5,7 +5,7 @@
 #      raw: test -e /usr/bin/python || (apt-get -y update && apt-get install -y python-minimal)
 
     - name: install tools
-      apt:
+      yum:
         name: "{{item}}"
         state: present
         update_cache: yes
@@ -13,7 +13,7 @@
         - python-httplib2
 
     - name: install nginx
-      apt:
+      yum:
         name: nginx
         state: present
         update_cache: yes
