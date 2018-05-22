@@ -21,12 +21,12 @@
         state: started
         enabled: yes
 
-#    - name: ensure mysql listening on all ports
-#      lineinfile:
-#        dest: /etc/mysql/my.cnf
-#        regexp: ^bind-address
-#        line: "bind-address = 0.0.0.0"
-#      notify: restart mysql
+    - name: ensure mysql listening on all ports
+      lineinfile:
+        path: /etc/mysql/my.cnf
+        regexp: ^bind-address
+        line: "bind-address = 0.0.0.0"
+      notify: restart mysql
 
     - name: Verify that MySQL server is up and running
       service:
