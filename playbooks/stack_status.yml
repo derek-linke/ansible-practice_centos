@@ -41,7 +41,7 @@
 
     - name: verify mysql is listening on 3306
       wait_for:
-        host: "{{ groups.tag_Name_DB_DRL }}"
+        host: 34.230.45.58
         port: 3306
         timeout: 20
       tags: stack_status
