@@ -33,13 +33,13 @@
       file:
         path: /etc/nginx/sites-enabled/
         state: directory
-        mode: 0644
+        mode: 0777
         
     - name: create directory sites available
       file:
         path: /etc/nginx/sites-available/
         state: directory
-        mode: 0644
+        mode: 0777
         
     - name: Configure nginx
       template:
