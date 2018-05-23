@@ -19,6 +19,28 @@
         state: present
         update_cache: yes
 
+    - name: add line to nginx conf file
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        line: "include /etc/nginx/sites-enabled/*;"    
+
+    - name: add line to nginx conf file
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        line: "include /etc/nginx/sites-available/*;"  
+        
+    - name: create directory sites enabled
+      file:
+        path: /etc/nginx/sites-enabled/
+        state: directory
+        mode: 0644
+        
+    - name: create directory sites available
+      file:
+        path: /etc/nginx/sites-available/
+        state: directory
+        mode: 0644
+        
     - name: Configure nginx
       template:
         src: nginxconf.j2
