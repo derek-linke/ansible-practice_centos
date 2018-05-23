@@ -11,6 +11,7 @@
         update_cache: yes
       with_items:
         - python-httplib2
+        - epel-release
 
     - name: install nginx
       yum:
